@@ -29,12 +29,13 @@ if not themeStart:
     themeStart= 0
 
 topic = "super mario"
-youtubeVideoLink = "https://www.youtube.com/watch?v=rLl9XBg7wSs&t=1585s"
+youtubeVideoLink = "https://www.youtube.com/watch?v=ia8bhFoqkVE"
 backgroundThemeLink = "https://www.youtube.com/watch?v=NTa6Xbzfq1U"
 themeStart = 0
+videoStart = 35
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -51,20 +52,14 @@ text = response["choices"][0]["text"]
 print(text)
 
 ###### Text to Speech
-speech = gTTS(text = text, lang = "en", slow = False, tld="co.uk")
+speech = gTTS(text = text, lang = "en-us", slow = False)
 speech.save("speech.mp3")
 
 
 
-###### Get Youtube Video
 
-# Create a YouTube object and get the highest resolution stream
-yt = YouTube(youtubeVideoLink)
-stream = yt.streams.get_highest_resolution()
 audio = YouTube(backgroundThemeLink)
 audio_stream = audio.streams.filter(only_audio=True).first()
-# Download the video to the current working directory
-stream.download(filename="video.mp4")
 audio_stream.download(filename="backgroundAudio.mp3",)
 
 
@@ -90,14 +85,13 @@ combined_audio = background_audio.overlay(speech_audio)
 # Export the combined audio as an mp3 file
 combined_audio.export("combinedAudio.mp3", format="mp3")
 
+###### Get Youtube Video
 
-
-
-
-
-
-
-
-
-
-
+# Create a YouTube object and get the highest resolution stream
+yt = YouTube(youtubeVideoLink)
+stream = yt.streams.get_highest_resolution()
+stream.download(filename="video.mp4")
+audioLength = MP3("speech.mp3")
+cutVideo = VideoFileClip("video.mp4").subclip(int(videoStart), int(videoStart) + audioLength.info.length).without_audio()
+cutVideo = cutVideo.set_audio(AudioFileClip("combinedAudio.mp3"))
+cutVideo.write_videofile("cutVideo.mp4")
