@@ -13,10 +13,20 @@ print("Enter Topic: ")
 topic = input()
 print("Enter Youtube Video Link:")
 youtubeVideoLink = input()
+print("Enter Video Start in seconds: ")
+videoStart = input()
+if not videoStart:
+    videoStart = 0
+print("Enter Video End in seconds: ")
+videoEnd = input()
+if not videoEnd:
+    videoEnd = 0
 print("Enter Background Theme/music: ")
 backgroundThemeLink = input()
 print("Theme Start in seconds: ")
 themeStart = input()
+if not themeStart:
+    themeStart= 0
 
 topic = "super mario"
 youtubeVideoLink = "https://www.youtube.com/watch?v=rLl9XBg7wSs&t=1585s"
@@ -79,6 +89,8 @@ combined_audio = background_audio.overlay(speech_audio)
 
 # Export the combined audio as an mp3 file
 combined_audio.export("combinedAudio.mp3", format="mp3")
+
+
 
 
 
