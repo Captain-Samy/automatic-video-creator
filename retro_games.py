@@ -9,14 +9,18 @@ from mutagen.mp3 import MP3
 from moviepy.editor import VideoFileClip, concatenate_videoclips, AudioFileClip
 
 
+#Get input
+print("Enter Topic: ")
+topic = input()
+print("Enter Youtube Video Link:")
+youtubeLink = input()
 
 ###### Get Text about the Game 
 API_SECRET_KEY_OPENAI = "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"
-retro_game = "League of Legends"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
-prompt = "Write a long Text for a video about " + retro_game
+prompt = "Write a long Text for a video about " + topic
 
 model = "text-davinci-003"
 temperature = 0.9
@@ -30,7 +34,7 @@ print(text)
 
 ###### Text to Speech
 speech = gTTS(text = text, lang = "en", slow = False, tld="co.uk")
-speech.save(retro_game + ".mp3")
+speech.save(topic + ".mp3")
 
 
 
@@ -41,9 +45,9 @@ api_key_youtube = 'AIzaSyBSTrU4CFKU-l6zH1tmSwA1n12UvU9JP50'
 youtube = build('youtube', 'v3', developerKey = api_key_youtube)
 
 # Search for videos related to "Super Mario Bros."
-maxResults = 10
+maxResults = 3
 search_response = youtube.search().list(
-    q= retro_game,
+    q= topic,
     type='video',
     part='id',
     maxResults= maxResults
@@ -102,7 +106,7 @@ for link in video_list:
 ####### JUST FOR FUN 
 
 
-audio = MP3(retro_game + ".mp3")
+audio = MP3(topic + ".mp3")
 video_length = audio.info.length /  maxResults
 
 # directory containing the videos to be cut
@@ -137,7 +141,7 @@ for filename in os.listdir(video_dir):
 final_clip = concatenate_videoclips(video_clips)
 
 # read the audio file
-audio_file = AudioFileClip('./' + retro_game+".mp3")
+audio_file = AudioFileClip('./' + topic+".mp3")
 
 # set the audio of the final clip to the audio file
 final_clip = final_clip.set_audio(audio_file)
