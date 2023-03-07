@@ -11,7 +11,7 @@ from pydub import AudioSegment
 import pydub
 import pydub.playback
 import io
-from moviepy.video.fx.all import resize
+from moviepy.video.fx.all import crop
 
 #Get input
 print("Enter Topic: ")
@@ -40,7 +40,7 @@ themeStart = 0
 videoStart = 40
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -108,21 +108,41 @@ cutVideo.write_videofile("cutVideo.mp4")
 
 
 # Change video format to 9:16
-# Load the video
-video = VideoFileClip("cutVideo.mp4")
 
-# Calculate the new size
-new_size = (int(video.size[1] * 9 / 16), video.size[1])
+input_file = "cutVideo.mp4"
+output_file = "croppedVideo.mp4"
 
-# Calculate the crop position
-left = int((video.size[0] - new_size[0]) / 2)
-right = left + new_size[0]
+# Load the video clip
+clip = VideoFileClip(input_file)
 
-# Crop the video
-cropped_video = video.fx(crop, x1=left, x2=right)
+# Get the original aspect ratio
+original_aspect_ratio = clip.w / clip.h
 
-# Resize the video
-resized_video = cropped_video.fx(resize, new_size)
+# Set the output aspect ratio to 9:16
+output_aspect_ratio = 9 / 16
 
-# Save the resized video
-resized_video.write_videofile("output_video.mp4")
+# Compute the required crop
+if original_aspect_ratio > output_aspect_ratio:
+    # Crop the width
+    new_width = clip.h * output_aspect_ratio
+    x1 = (clip.w - new_width) / 2
+    x2 = x1 + new_width
+    y1, y2 = 0, clip.h
+else:
+    # Crop the height
+    new_height = clip.w / output_aspect_ratio
+    y1 = (clip.h - new_height) / 2
+    y2 = y1 + new_height
+    x1, x2 = 0, clip.w
+
+# Crop the video clip
+cropped_clip = clip.crop(x1, y1, x2, y2)
+
+# Set the output aspect ratio and size
+output_size = (int(cropped_clip.h * output_aspect_ratio), cropped_clip.h)
+
+# Set the output format
+output_format = {"fps": clip.fps, "codec": "libx264"}
+
+# Write the cropped clip to the output file
+cropped_clip.resize(height=output_size[1]).write_videofile(output_file, **output_format)
