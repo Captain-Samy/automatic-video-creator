@@ -66,7 +66,7 @@ def videoCreator(topic, videoLink, themeLink):
     videoStart = 40
 
     ###### Get Text about the Game 
-    API_SECRET_KEY_OPENAI = "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"
+    API_SECRET_KEY_OPENAI = "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"
 
     openai.api_key = API_SECRET_KEY_OPENAI
 

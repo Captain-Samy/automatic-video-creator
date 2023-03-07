@@ -16,7 +16,7 @@
             padding: 5%;
             border-radius: 10px;
         }
-        #output {
+        #log {
             margin-top: 2%;
             background-color: black;
             color: white;
@@ -44,17 +44,36 @@
         <button onclick="runScript()" type="submit">Submit</button>
     </div>
     <div id="output"></div>
+    <pre id="log"></pre>
 </body>
 <script>
-        function runScript() {
-            const topic = document.getElementById("topic").value;
-            const videoLink = document.getElementById("videoLink").value;
-            const themeLink = document.getElementById("themeLink").value;
-            const url = `/run_videoCreator?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}`;
-            fetch(url)
-              .then(response => response.text())
-              .then(output => document.getElementById("output").innerText = output)
-              .catch(error => console.error(error));
-        }
+function runScript() {
+    const topic = document.getElementById("topic").value;
+    const videoLink = document.getElementById("videoLink").value;
+    const themeLink = document.getElementById("themeLink").value;
+    const url = `/run_script?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}`;
+
+    const logElement = document.getElementById("log");
+
+    fetch(url)
+        .then(response => {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            reader.read().then(function processResult(result) {
+                if (result.done) {
+                    return;
+                }
+                buffer += decoder.decode(result.value, {stream: true});
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+                for (const line of lines) {
+                    logElement.innerText += `${line}\n`;
+                }
+                return reader.read().then(processResult);
+            });
+        })
+        .catch(error => console.error(error));
+}
 </script>
 </html>
