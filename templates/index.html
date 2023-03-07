@@ -21,21 +21,25 @@
 <body>
     <h1>Automatic Video Creater</h1>
     <div>
-        <label for="input1">Input 1:</label>
-        <input type="text" name="input1" id="input1"><br>
+        <label for="topic">Input 1:</label>
+        <input type="text" name="topic" id="topic" value="Battlefield 4"><br>
 
-        <label for="input2">Input 2:</label>
-        <input type="text" name="input2" id="input2"><br>
+        <label for="videoLink">Input 2:</label>
+        <input type="text" name="videoLink" id="videoLink" value="https://www.youtube.com/watch?v=cmYVGZ1w1y4"><br>
 
-        <label for="input3">Input 3:</label>
-        <input type="text" name="input3" id="input3"><br>
+        <label for="themeLink">Input 3:</label>
+        <input type="text" name="themeLink" id="themeLink" value="https://www.youtube.com/watch?v=pUOibX2xV34"><br>
 
         <button onclick="runScript()" type="submit">Submit</button>
     </div>
 </body>
 <script>
     function runScript() {
-        fetch('/run_videoCreator')
+        const topic = document.getElementById("topic").value
+        const videoLink = document.getElementById("videoLink").value
+        const themeLink = document.getElementById("themeLink").value
+        const url = `/run_videoCreator?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}`;
+        fetch(url)
           .then(response => console.log(response))
           .catch(error => console.error(error));
     }
