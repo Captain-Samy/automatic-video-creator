@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, Response, render_template, request, stream_with_context
 import subprocess
 
 app = Flask(__name__)
@@ -10,13 +10,18 @@ def home():
 
 @app.route('/run_videoCreator')
 def run_script():
-    query_string = request.query_string.decode()
-    print(query_string)
     arg1 = request.args.get("arg1")
-    print("arg1: " + arg1)
     arg2 = request.args.get("arg2")
-    print("arg2:  " + arg2)
     arg3 = request.args.get("arg3")
-    print("arg3: " + arg3)
-    subprocess.run(['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3])
-    return 'Script executed successfully!'
+
+    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3]
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    output_lines = []
+
+    def stream():
+        for line in iter(process.stdout.readline, b''):
+            output_lines.append(line.decode())
+            yield line
+
+    return Response(stream_with_context(stream()), mimetype='text/plain')

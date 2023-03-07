@@ -1,3 +1,4 @@
+import os
 import sys
 import openai
 from pyparsing import Sequence
@@ -65,7 +66,7 @@ def videoCreator(topic, videoLink, themeLink):
     videoStart = 40
 
     ###### Get Text about the Game 
-    API_SECRET_KEY_OPENAI = "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"
+    API_SECRET_KEY_OPENAI = "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"
 
     openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -187,5 +188,15 @@ def videoCreator(topic, videoLink, themeLink):
 
     result.write_videofile("output.mp4")
     print("********** Video finished **********")
+    
+    #Delete files afterwards
+    os.remove("backgroundAudio.mp3")
+    os.remove("combinedAudio.mp3")
+    os.remove("croppedVideo.mp4")
+    os.remove("cutVideo.mp4")
+    os.remove("speech.mp3")
+    os.remove("video.mp4")
 
+
+#run the script
 videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3])
