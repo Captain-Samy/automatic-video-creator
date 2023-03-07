@@ -79,7 +79,7 @@ themeStart = 0
 videoStart = 40
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 

@@ -20,7 +20,7 @@
 </head>
 <body>
     <h1>Automatic Video Creater</h1>
-    <form method="POST" action="/process">
+    <div>
         <label for="input1">Input 1:</label>
         <input type="text" name="input1" id="input1"><br>
 
@@ -30,7 +30,14 @@
         <label for="input3">Input 3:</label>
         <input type="text" name="input3" id="input3"><br>
 
-        <button type="submit">Submit</button>
-    </form>
+        <button onclick="runScript()" type="submit">Submit</button>
+    </div>
 </body>
+<script>
+    function runScript() {
+        fetch('/run_videoCreator')
+          .then(response => console.log(response))
+          .catch(error => console.error(error));
+    }
+</script>
 </html>

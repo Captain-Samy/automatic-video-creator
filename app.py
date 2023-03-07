@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import subprocess
 
 app = Flask(__name__)
 
@@ -7,6 +8,7 @@ def home():
     return render_template("/index.html")
 
 
-@app.route("/Thomas")
-def hello_test():
-    return "<p>Hello, Thomas!</p>"
+@app.route('/run_videoCreator')
+def run_script():
+  subprocess.run(['python', 'scripts/videoCreator.py'])
+  return 'Script executed successfully!'
