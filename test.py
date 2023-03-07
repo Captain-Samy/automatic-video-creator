@@ -11,6 +11,7 @@ from pydub import AudioSegment
 import pydub
 import pydub.playback
 import io
+from moviepy.video.fx.all import resize
 
 #Get input
 print("Enter Topic: ")
@@ -39,15 +40,15 @@ themeStart = 0
 videoStart = 40
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
-prompt = "Write a long ironic review about " + topic + " in the style of SsethTzeentach mocking the developers and making fun of community members which liked the game nevertheless using curse words"
+prompt = "Write one sentence about " + topic + " in the style of SsethTzeentach mocking the developers and making fun of community members which liked the game nevertheless using curse words"
 
 model = "text-davinci-003"
 temperature = 0.9
-max_tokens = 250
+max_tokens = 50
 
 
 response = openai.Completion.create(prompt = prompt, model = model, temperature=temperature, max_tokens = max_tokens)
@@ -104,3 +105,24 @@ audioLength = MP3("speech.mp3")
 cutVideo = VideoFileClip("video.mp4").subclip(int(videoStart), int(videoStart) + audioLength.info.length).without_audio()
 cutVideo = cutVideo.set_audio(AudioFileClip("combinedAudio.mp3"))
 cutVideo.write_videofile("cutVideo.mp4")
+
+
+# Change video format to 9:16
+# Load the video
+video = VideoFileClip("cutVideo.mp4")
+
+# Calculate the new size
+new_size = (int(video.size[1] * 9 / 16), video.size[1])
+
+# Calculate the crop position
+left = int((video.size[0] - new_size[0]) / 2)
+right = left + new_size[0]
+
+# Crop the video
+cropped_video = video.fx(crop, x1=left, x2=right)
+
+# Resize the video
+resized_video = cropped_video.fx(resize, new_size)
+
+# Save the resized video
+resized_video.write_videofile("output_video.mp4")
