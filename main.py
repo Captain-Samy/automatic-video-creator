@@ -200,7 +200,7 @@ subtitles = SubtitlesClip(subs, generator)
 result = CompositeVideoClip([video, subtitles.set_position(("center", 0.7), relative=True)])
 
 result.write_videofile("output.mp4")
-print("--> Video finished")
+print("********** Video finished **********")
 
 
 
