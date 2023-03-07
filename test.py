@@ -1,6 +1,9 @@
+import re
+from typing import Optional
 import openai
 from gtts import gTTS
 from googleapiclient.discovery import build
+from pyparsing import Sequence
 from pytube import YouTube
 from pydub import AudioSegment
 from moviepy.video.io.VideoFileClip import VideoFileClip
@@ -12,6 +15,77 @@ import pydub
 import pydub.playback
 import io
 from moviepy.video.fx.all import crop
+import pvleopard
+from moviepy.video.tools.subtitles import SubtitlesClip, TextClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
+from moviepy.config import change_settings
+
+change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"})
+
+def second_to_timecode(x: float) -> str:
+    hour, x = divmod(x, 3600)
+    minute, x = divmod(x, 60)
+    second, x = divmod(x, 1)
+    millisecond = int(x * 1000.)
+
+    return '%.2d:%.2d:%.2d,%.3d' % (hour, minute, second, millisecond)
+
+
+def to_srt(words: Sequence[pvleopard.Leopard.Word]) -> str:
+    def _helper(word: pvleopard.Leopard.Word, current_line) -> None:
+        lines.append("%d" % section)
+        lines.append(
+            "%s --> %s" %
+            (
+                second_to_timecode(word.start_sec),
+                second_to_timecode(word.end_sec)
+            )
+        )
+        if len(word.word) <= 12:
+            if not current_line:
+                current_line = word.word
+            elif len(current_line) + len(word.word) <= 30:
+                current_line += ' ' + word.word
+            else:
+                lines.append(current_line.strip())
+                current_line = word.word
+        else:
+            if current_line:
+                lines.append(current_line.strip())
+                current_line = ''
+            words = [w for w in re.split(r'(\s+)', word.word) if w.strip()]
+            for i, w in enumerate(words):
+                if len(w) <= 12 or i == 0:
+                    if not current_line:
+                        current_line = w
+                    elif len(current_line) + len(w) <= 30:
+                        current_line += ' ' + w
+                    else:
+                        lines.append(current_line.strip())
+                        current_line = w
+                else:
+                    if current_line:
+                        lines.append(current_line.strip())
+                        current_line = ''
+                    lines.append(w)
+            if current_line:
+                lines.append(current_line.strip())
+                current_line = ''
+        lines.append('')
+
+    lines = []
+    section = 1
+    current_line = ''
+    for word in words:
+        _helper(word, current_line)
+        section += 1
+    if current_line:
+        lines.append(current_line.strip())
+
+    return '\n'.join(lines)
+
+
+
 
 #Get input
 print("Enter Topic: ")
@@ -40,7 +114,7 @@ themeStart = 0
 videoStart = 40
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -51,10 +125,11 @@ temperature = 0.9
 max_tokens = 50
 
 
-response = openai.Completion.create(prompt = prompt, model = model, temperature=temperature, max_tokens = max_tokens)
+#response = openai.Completion.create(prompt = prompt, model = model, temperature=temperature, max_tokens = max_tokens)
 
-text = response["choices"][0]["text"]
-print(text)
+#text = response["choices"][0]["text"]
+#print(text)
+text = "What a bunch of fucking imbeciles to enjoy Battlefield 4 - 'Ohh exciting, a singleplayer campaign, ohh so innovative' - god damn it, what a bunch of morons."
 
 ###### Text to Speech
 #speech = gTTS(text = text, lang = "en-us", slow = False)
@@ -146,3 +221,28 @@ output_format = {"fps": clip.fps, "codec": "libx264"}
 
 # Write the cropped clip to the output file
 cropped_clip.resize(height=output_size[1]).write_videofile(output_file, **output_format)
+
+
+
+#for srt file
+leopard = pvleopard.create(access_key="4nWg2kn7sSJd2A+d/cAHNCtuU7sA5y5U6b2/H2aqEX5d3592eXv7HA==")
+transcript, words = leopard.process_file("combinedAudio.mp3")
+
+with open("subtitles.srt", 'w') as f:
+    f.write(to_srt(words))
+
+
+# Load the video and subtitle files
+video = VideoFileClip("croppedVideo.mp4")
+subtitles = SubtitlesClip("subtitles.srt")
+
+generator = lambda txt: TextClip(txt, font='courier-new-bold', method="caption", fontsize=55, color='orange', kerning=2, stroke_color="white", align="center")
+subs = SubtitlesClip('subtitles.srt', generator)
+subtitles = SubtitlesClip(subs, generator)
+
+result = CompositeVideoClip([video, subtitles.set_pos(('center', "center"))])
+
+result.write_videofile("output.mp4")
+
+
+
