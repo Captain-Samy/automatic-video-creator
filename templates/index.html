@@ -12,6 +12,14 @@
         border: 5px;
               
         }
+        #inputs{        
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 5px;
+
+        }
         input{
             padding: 5%;
             border-radius: 10px;
@@ -31,17 +39,18 @@
 </head>
 <body>
     <h1>Automatic Video Creater</h1>
-    <div>
-        <label for="topic">Input 1:</label>
+    <div id="inputs">
+        <label for="topic">Prompt:</label>
         <input type="text" name="topic" id="topic" value="Battlefield 4"><br>
 
-        <label for="videoLink">Input 2:</label>
+        <label for="videoLink">Video Link</label>
         <input type="text" name="videoLink" id="videoLink" value="https://www.youtube.com/watch?v=cmYVGZ1w1y4"><br>
 
-        <label for="themeLink">Input 3:</label>
+        <label for="themeLink">Theme Link</label>
         <input type="text" name="themeLink" id="themeLink" value="https://www.youtube.com/watch?v=pUOibX2xV34"><br>
 
-        <button onclick="runScript()" type="submit">Submit</button>
+        <button onclick="runScript()" type="submit">Create Video</button>
+        <a href="{{ url_for('download_file', filename='output.mp4') }}">Download Video</a>
     </div>
     <div id="output"></div>
     <pre id="log"></pre>

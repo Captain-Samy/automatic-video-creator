@@ -1,8 +1,9 @@
+import os
 import subprocess
 import sys
 import threading
 
-from flask import Flask, Response, request, render_template
+from flask import Flask, Response, request, render_template, send_file
 
 
 app = Flask(__name__)
@@ -33,6 +34,9 @@ def run_script_route():
     command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3]
     return Response(run_script(command), mimetype='text/html')
 
+@app.route('/download_file')
+def download_file():
+    return send_file('output.mp4', as_attachment=True)
 
 if __name__ == '__main__':
     # start a separate thread to run the Flask app
