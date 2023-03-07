@@ -30,6 +30,7 @@ def second_to_timecode(x: float) -> str:
 
 def to_srt(words: Sequence[pvleopard.Leopard.Word]) -> str:
     def _helper(word: pvleopard.Leopard.Word, prev_end: float) -> float:
+        print(word.word)
         start = prev_end
         lines.append("%d" % section)
         lines.append(
@@ -40,9 +41,9 @@ def to_srt(words: Sequence[pvleopard.Leopard.Word]) -> str:
             )
         )
         if len(word.word) <= 12:
-            lines.append(word.word + '\n')
+            lines.append(word.word.upper() + '\n')
         else:
-            lines.append('\n' + word.word + '\n')
+            lines.append('\n' + word.word.upper() + '\n')
         return word.end_sec
         
     lines = []
@@ -53,7 +54,6 @@ def to_srt(words: Sequence[pvleopard.Leopard.Word]) -> str:
         section += 1
 
     return '\n'.join(lines)
-
 
 #Get input
 print("Enter Topic: ")
@@ -82,7 +82,7 @@ themeStart = 0
 videoStart = 40
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -199,7 +199,7 @@ with open("subtitles.srt", 'w') as f:
 video = VideoFileClip("croppedVideo.mp4")
 subtitles = SubtitlesClip("subtitles.srt")
 
-generator = lambda txt: TextClip(txt, font='courier-new-bold', method="caption", fontsize=50, color='orange', kerning=2, stroke_color="white", align="center")
+generator = lambda txt: TextClip(txt, font='arial-black-standard', method="caption", fontsize=55, color='white', kerning=2, stroke_color="black", stroke_width=1, align="center")
 subs = SubtitlesClip('subtitles.srt', generator)
 subtitles = SubtitlesClip(subs, generator)
 
