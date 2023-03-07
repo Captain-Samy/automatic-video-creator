@@ -1,4 +1,3 @@
-import re
 from typing import Optional
 import openai
 from gtts import gTTS
@@ -19,7 +18,6 @@ import pvleopard
 from moviepy.video.tools.subtitles import SubtitlesClip, TextClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from moviepy.config import change_settings
-
 change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"})
 
 def second_to_timecode(x: float) -> str:
@@ -30,61 +28,31 @@ def second_to_timecode(x: float) -> str:
 
     return '%.2d:%.2d:%.2d,%.3d' % (hour, minute, second, millisecond)
 
-
 def to_srt(words: Sequence[pvleopard.Leopard.Word]) -> str:
-    def _helper(word: pvleopard.Leopard.Word, current_line) -> None:
+    def _helper(word: pvleopard.Leopard.Word, prev_end: float) -> float:
+        start = prev_end
         lines.append("%d" % section)
         lines.append(
             "%s --> %s" %
             (
-                second_to_timecode(word.start_sec),
+                second_to_timecode(start),
                 second_to_timecode(word.end_sec)
             )
         )
         if len(word.word) <= 12:
-            if not current_line:
-                current_line = word.word
-            elif len(current_line) + len(word.word) <= 30:
-                current_line += ' ' + word.word
-            else:
-                lines.append(current_line.strip())
-                current_line = word.word
+            lines.append(word.word + '\n')
         else:
-            if current_line:
-                lines.append(current_line.strip())
-                current_line = ''
-            words = [w for w in re.split(r'(\s+)', word.word) if w.strip()]
-            for i, w in enumerate(words):
-                if len(w) <= 12 or i == 0:
-                    if not current_line:
-                        current_line = w
-                    elif len(current_line) + len(w) <= 30:
-                        current_line += ' ' + w
-                    else:
-                        lines.append(current_line.strip())
-                        current_line = w
-                else:
-                    if current_line:
-                        lines.append(current_line.strip())
-                        current_line = ''
-                    lines.append(w)
-            if current_line:
-                lines.append(current_line.strip())
-                current_line = ''
-        lines.append('')
-
+            lines.append('\n' + word.word + '\n')
+        return word.end_sec
+        
     lines = []
     section = 1
-    current_line = ''
+    prev_end = 0.0
     for word in words:
-        _helper(word, current_line)
+        prev_end = _helper(word, prev_end)
         section += 1
-    if current_line:
-        lines.append(current_line.strip())
 
     return '\n'.join(lines)
-
-
 
 
 #Get input
@@ -114,22 +82,21 @@ themeStart = 0
 videoStart = 40
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
-prompt = "Write one sentence about " + topic + " in the style of SsethTzeentach mocking the developers and making fun of community members which liked the game nevertheless using curse words"
+prompt = "Write a one sentence review about " + topic + " in the style of SsethTzeentach mocking the developers and making fun of community members which liked the game nevertheless using curse words"
 
 model = "text-davinci-003"
 temperature = 0.9
 max_tokens = 50
 
 
-#response = openai.Completion.create(prompt = prompt, model = model, temperature=temperature, max_tokens = max_tokens)
+response = openai.Completion.create(prompt = prompt, model = model, temperature=temperature, max_tokens = max_tokens)
 
-#text = response["choices"][0]["text"]
-#print(text)
-text = "What a bunch of fucking imbeciles to enjoy Battlefield 4 - 'Ohh exciting, a singleplayer campaign, ohh so innovative' - god damn it, what a bunch of morons."
+text = response["choices"][0]["text"]
+print(text)
 
 ###### Text to Speech
 #speech = gTTS(text = text, lang = "en-us", slow = False)
@@ -236,7 +203,7 @@ with open("subtitles.srt", 'w') as f:
 video = VideoFileClip("croppedVideo.mp4")
 subtitles = SubtitlesClip("subtitles.srt")
 
-generator = lambda txt: TextClip(txt, font='courier-new-bold', method="caption", fontsize=55, color='orange', kerning=2, stroke_color="white", align="center")
+generator = lambda txt: TextClip(txt, font='courier-new-bold', method="caption", fontsize=60, color='orange', kerning=2, stroke_color="white", align="center")
 subs = SubtitlesClip('subtitles.srt', generator)
 subtitles = SubtitlesClip(subs, generator)
 
