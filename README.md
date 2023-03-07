@@ -1,13 +1,10 @@
 # automatic-video-creator
 
-Install dependencies with: 
-pip install -r requirements.txt
+Hallo Thomas 
+Wenn du den stuff hier starten willst, dann werde zum Hackerman und mache das hier:
 
-Wenn du den stuff hier starten willst Thomas, dann:
-
-1. Starte virtual environment:
+1. Start virtual environment:
 venv\Scripts\activate
-
 
 2. Install dependencies with:
 pip install -r requirements.txt
