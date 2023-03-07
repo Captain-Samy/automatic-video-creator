@@ -1,7 +1,4 @@
-from typing import Optional
 import openai
-from gtts import gTTS
-from googleapiclient.discovery import build
 from pyparsing import Sequence
 from pytube import YouTube
 from pydub import AudioSegment
@@ -10,16 +7,16 @@ from mutagen.mp3 import MP3
 from moviepy.editor import VideoFileClip, concatenate_videoclips, AudioFileClip
 from elevenlabslib import ElevenLabsUser
 from pydub import AudioSegment
-import pydub
-import pydub.playback
 import io
-from moviepy.video.fx.all import crop
 import pvleopard
 from moviepy.video.tools.subtitles import SubtitlesClip, TextClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from moviepy.config import change_settings
+
+#For ImageMagick Idk what it does but idc
 change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"})
 
+#create srt files from text
 def second_to_timecode(x: float) -> str:
     hour, x = divmod(x, 3600)
     minute, x = divmod(x, 60)
@@ -30,7 +27,6 @@ def second_to_timecode(x: float) -> str:
 
 def to_srt(words: Sequence[pvleopard.Leopard.Word]) -> str:
     def _helper(word: pvleopard.Leopard.Word, prev_end: float) -> float:
-        print(word.word)
         start = prev_end
         lines.append("%d" % section)
         lines.append(
@@ -75,6 +71,7 @@ themeStart = input()
 if not themeStart:
     themeStart= 0
 
+#Settings for Testing 
 topic = "Battlefield 4"
 youtubeVideoLink = "https://www.youtube.com/watch?v=cmYVGZ1w1y4"
 backgroundThemeLink = "https://www.youtube.com/watch?v=pUOibX2xV34"
@@ -82,7 +79,7 @@ themeStart = 0
 videoStart = 40
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -96,24 +93,20 @@ max_tokens = 50
 response = openai.Completion.create(prompt = prompt, model = model, temperature=temperature, max_tokens = max_tokens)
 
 text = response["choices"][0]["text"]
-print(text)
+print("--> Openai Text generated")
 
 user = ElevenLabsUser("50053dae449db964a829c6dda45034ce") #fill in your api key as a string
 voice = user.get_voices_by_name("Josh")[0]  #fill in the name of the voice you want to use. ex: "Rachel"
 voice_bytes = voice.generate_audio_bytes(text) #fill in what you want the ai to say as a string
-
-
-
+speech_audio = AudioSegment.from_file_using_temporary_files(io.BytesIO(voice_bytes))
+speech_audio.export("speech.mp3", format="mp3")
+print("--> Text to Speech Audo generated")
 
 audio = YouTube(backgroundThemeLink)
 audio_stream = audio.streams.filter(only_audio=True).first()
 audio_stream.download(filename="backgroundAudio.mp3",)
-
-
-#Combine audio files 
-speech_audio = AudioSegment.from_file_using_temporary_files(io.BytesIO(voice_bytes))
-speech_audio.export("speech.mp3", format="mp3")
 background_audio = AudioSegment.from_file("backgroundAudio.mp3")
+print("--> BackgroundAudio downloadet")
 
 
 # Get the duration of the speech audio in milliseconds
@@ -132,6 +125,7 @@ combined_audio = background_audio.overlay(speech_audio)
 
 # Export the combined audio as an mp3 file
 combined_audio.export("combinedAudio.mp3", format="mp3")
+print("--> CombinedAudio created")
 
 ###### Get Youtube Video
 
@@ -139,14 +133,14 @@ combined_audio.export("combinedAudio.mp3", format="mp3")
 yt = YouTube(youtubeVideoLink)
 stream = yt.streams.get_highest_resolution()
 stream.download(filename="video.mp4")
+print("--> Youtube Video downloadet")
 audioLength = MP3("speech.mp3")
 cutVideo = VideoFileClip("video.mp4").subclip(int(videoStart), int(videoStart) + audioLength.info.length).without_audio()
 cutVideo = cutVideo.set_audio(AudioFileClip("combinedAudio.mp3"))
 cutVideo.write_videofile("cutVideo.mp4")
-
+print("--> Cutted Video to length")
 
 # Change video format to 9:16
-
 input_file = "cutVideo.mp4"
 output_file = "croppedVideo.mp4"
 
@@ -184,7 +178,7 @@ output_format = {"fps": clip.fps, "codec": "libx264"}
 
 # Write the cropped clip to the output file
 cropped_clip.resize(height=output_size[1]).write_videofile(output_file, **output_format)
-
+print("--> Cropped Video to Mobile Size")
 
 
 #for srt file
@@ -193,19 +187,20 @@ transcript, words = leopard.process_file("combinedAudio.mp3")
 
 with open("subtitles.srt", 'w') as f:
     f.write(to_srt(words))
+print("--> Created srt file")
 
 
 # Load the video and subtitle files
 video = VideoFileClip("croppedVideo.mp4")
-subtitles = SubtitlesClip("subtitles.srt")
 
-generator = lambda txt: TextClip(txt, font='arial-black-standard', method="caption", fontsize=55, color='white', kerning=2, stroke_color="black", stroke_width=1, align="center")
+generator = lambda txt: TextClip(txt, font='Courier-New-Bold', method="caption", fontsize=60, color='orange', kerning=2, stroke_color="black", stroke_width=1, align="center")
 subs = SubtitlesClip('subtitles.srt', generator)
 subtitles = SubtitlesClip(subs, generator)
 
 result = CompositeVideoClip([video, subtitles.set_position(("center", 0.7), relative=True)])
 
 result.write_videofile("output.mp4")
+print("--> Video finished")
 
 
 
