@@ -82,7 +82,7 @@ themeStart = 0
 videoStart = 40
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -97,10 +97,6 @@ response = openai.Completion.create(prompt = prompt, model = model, temperature=
 
 text = response["choices"][0]["text"]
 print(text)
-
-###### Text to Speech
-#speech = gTTS(text = text, lang = "en-us", slow = False)
-#speech.save("speech.mp3")
 
 user = ElevenLabsUser("50053dae449db964a829c6dda45034ce") #fill in your api key as a string
 voice = user.get_voices_by_name("Josh")[0]  #fill in the name of the voice you want to use. ex: "Rachel"
@@ -203,11 +199,11 @@ with open("subtitles.srt", 'w') as f:
 video = VideoFileClip("croppedVideo.mp4")
 subtitles = SubtitlesClip("subtitles.srt")
 
-generator = lambda txt: TextClip(txt, font='courier-new-bold', method="caption", fontsize=60, color='orange', kerning=2, stroke_color="white", align="center")
+generator = lambda txt: TextClip(txt, font='courier-new-bold', method="caption", fontsize=50, color='orange', kerning=2, stroke_color="white", align="center")
 subs = SubtitlesClip('subtitles.srt', generator)
 subtitles = SubtitlesClip(subs, generator)
 
-result = CompositeVideoClip([video, subtitles.set_pos(('center', "center"))])
+result = CompositeVideoClip([video, subtitles.set_position(("center", 0.7), relative=True)])
 
 result.write_videofile("output.mp4")
 
