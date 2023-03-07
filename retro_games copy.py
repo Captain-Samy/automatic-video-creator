@@ -6,6 +6,10 @@ from pydub import AudioSegment
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from mutagen.mp3 import MP3
 from moviepy.editor import VideoFileClip, concatenate_videoclips, AudioFileClip
+from elevenlabslib import ElevenLabsUser
+import pydub
+import pydub.playback
+import io
 
 
 #Get input
@@ -35,7 +39,7 @@ themeStart = 0
 videoStart = 35
 
 ###### Get Text about the Game 
-API_SECRET_KEY_OPENAI = "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"
+API_SECRET_KEY_OPENAI = "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"
 
 openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -51,9 +55,16 @@ response = openai.Completion.create(prompt = prompt, model = model, temperature=
 text = response["choices"][0]["text"]
 print(text)
 
+"""
 ###### Text to Speech
 speech = gTTS(text = text, lang = "en-us", slow = False)
 speech.save("speech.mp3")
+
+"""
+      
+user = ElevenLabsUser("50053dae449db964a829c6dda45034ce") #fill in your api key as a string
+voice = user.get_voices_by_name("Rachel")[0]  #fill in the name of the voice you want to use. ex: "Rachel"
+voice_bytes = voice.generate_audio_bytes(text) #fill in what you want the ai to say as a string
 
 
 
@@ -64,7 +75,7 @@ audio_stream.download(filename="backgroundAudio.mp3",)
 
 
 #Combine audio files 
-speech_audio = AudioSegment.from_mp3("speech.mp3")
+speech_audio = AudioSegment.from_file_using_temporary_files(io.BytesIO(voice_bytes))
 background_audio = AudioSegment.from_file("backgroundAudio.mp3")
 
 
