@@ -1,0 +1,8 @@
+elevenlabslib==0.2.6
+moviepy==1.0.3
+mutagen==1.46.0
+openai==0.26.5
+pvleopard==1.1.4
+pydub==0.25.1
+pyparsing==3.0.9
+pytube==12.1.2
