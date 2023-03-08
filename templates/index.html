@@ -104,7 +104,7 @@
     <h1 class="headline">Automatic Video Creater</h1>
     <div id="inputs">
         <label for="topic">Prompt</label>
-        <input type="text" name="topic" id="topic" value="Battlefield 4"><br>
+        <input type="text" name="topic" id="topic" value="imitating SsethTzeentachs style write a 100 word video essay about Battlefield 5 and how much you hate the developers for making this game as well as every human who still plays it using funny comparisons as well as ironic and funny remarks"><br>
 
         <label for="videoLink">Video Link</label>
         <input type="text" name="videoLink" id="videoLink" value="https://www.youtube.com/watch?v=cmYVGZ1w1y4"><br>
@@ -120,7 +120,7 @@
 </body>
 <script>
 function runScript() {
-    const topic = document.getElementById("topic").value;
+    const topic = document.getElementById("topic").value; 
     const videoLink = document.getElementById("videoLink").value;
     const themeLink = document.getElementById("themeLink").value;
     const url = `/run_script?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}`;

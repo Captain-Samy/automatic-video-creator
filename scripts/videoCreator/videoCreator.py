@@ -65,7 +65,7 @@ def videoCreator(topic, videoLink, themeLink):
     videoStart = 40
 
     ###### Get Text about the Game 
-    API_SECRET_KEY_OPENAI = "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"
+    API_SECRET_KEY_OPENAI = "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"
 
     openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -190,7 +190,8 @@ def videoCreator(topic, videoLink, themeLink):
     # Load the video and subtitle files
     video = VideoFileClip("croppedVideo.mp4")
 
-    generator = lambda txt: TextClip(txt, font='Arial-Black', method="caption", fontsize=45, color='orange', kerning=0, align="center")
+    font_size = int(min(video.h, 1920) / 20)
+    generator = lambda txt: TextClip(txt, font='Arial-Black', method="caption", fontsize=font_size, color='orange', kerning=0, stroke_width=1, stroke_color="black", align="center")
     subs = SubtitlesClip('subtitles.srt', generator)
     subtitles = SubtitlesClip(subs, generator)
 
