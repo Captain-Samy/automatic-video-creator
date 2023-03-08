@@ -177,7 +177,7 @@ def videoCreator(topic, videoLink, themeLink):
     # Load the video and subtitle files
     video = VideoFileClip("croppedVideo.mp4")
 
-    generator = lambda txt: TextClip(txt, font='Courier-New-Bold', method="caption", fontsize=60, color='orange', kerning=2, stroke_color="black", stroke_width=1, align="center")
+    generator = lambda txt: TextClip(txt, font='Arial-Black', method="caption", fontsize=45, color='orange', kerning=0, align="center")
     subs = SubtitlesClip('subtitles.srt', generator)
     subtitles = SubtitlesClip(subs, generator)
 
