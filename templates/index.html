@@ -3,6 +3,11 @@
 <head>
     <title>Video Creator</title>
     <style>
+        .headline{
+            font-family:monospace;
+            font-style: normal;
+            font-size: 4vh;
+        }
         body{
         display: flex;
         flex-direction: column;
@@ -10,6 +15,7 @@
         align-items: center;
         height: 100vh;
         border: 5px;
+        background-image: url("static/backgroundImage.jpg");
               
         }
         #inputs{        
@@ -85,11 +91,17 @@
         .button-9:focus {
             box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .2) 0 6px 15px 0, rgba(0, 0, 0, .1) 0 2px 2px 0, rgba(50, 151, 211, .3) 0 0 0 4px;
             }
+        label{
+            font-family:monospace;
+            font-style: normal;
+            font-size: 2.5vh;
+            margin-bottom: 1vh;
+        }
 </style>
     </style>
 </head>
 <body>
-    <h1>Automatic Video Creater</h1>
+    <h1 class="headline">Automatic Video Creater</h1>
     <div id="inputs">
         <label for="topic">Prompt</label>
         <input type="text" name="topic" id="topic" value="Battlefield 4"><br>
