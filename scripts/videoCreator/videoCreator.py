@@ -14,6 +14,8 @@ import pvleopard
 from moviepy.video.tools.subtitles import SubtitlesClip, TextClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from moviepy.config import change_settings
+from yt_dlp import YoutubeDL
+
 
 #For ImageMagick Idk what it does but idc
 change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"})
@@ -63,7 +65,7 @@ def videoCreator(topic, videoLink, themeLink):
     videoStart = 40
 
     ###### Get Text about the Game 
-    API_SECRET_KEY_OPENAI = "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"
+    API_SECRET_KEY_OPENAI = "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"
 
     openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -114,9 +116,20 @@ def videoCreator(topic, videoLink, themeLink):
     ###### Get Youtube Video
 
     # Create a YouTube object and get the highest resolution stream
-    yt = YouTube(youtubeVideoLink)
-    stream = yt.streams.get_highest_resolution()
-    stream.download(filename="video.mp4")
+    #yt = YouTube(youtubeVideoLink)
+    #stream = yt.streams.get_highest_resolution()
+    #stream.download(filename="video.mp4")
+    os.remove("video.mp4")
+    ydl_opts = {
+    'format': 'bestvideo[ext=mp4][ext=mp4]',
+    'outtmpl': 'video.mp4',
+    'postprocessors': [],
+    'no_post_overwrites': True,
+    'allsubtitles': False,
+    'nooverwrites': True
+    }
+    with YoutubeDL(ydl_opts) as ydl:
+        ydl.download([videoLink])
     print("--> Youtube Video downloadet")
     audioLength = MP3("speech.mp3")
     cutVideo = VideoFileClip("video.mp4").subclip(int(videoStart), int(videoStart) + audioLength.info.length).without_audio()
