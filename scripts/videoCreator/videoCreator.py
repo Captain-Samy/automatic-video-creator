@@ -66,7 +66,7 @@ def videoCreator(topic, videoLink, themeLink):
     videoStart = 40
 
     ###### Get Text about the Game 
-    API_SECRET_KEY_OPENAI = "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"
+    API_SECRET_KEY_OPENAI = "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"
 
     openai.api_key = API_SECRET_KEY_OPENAI
 
@@ -187,7 +187,11 @@ def videoCreator(topic, videoLink, themeLink):
     result = CompositeVideoClip([video, subtitles.set_position(("center", 0.7), relative=True)])
 
     result.write_videofile("output.mp4")
+    print("************************************")
+    print("************************************")
     print("********** Video finished **********")
+    print("************************************")
+    print("************************************")
     
     #Delete files afterwards
     os.remove("backgroundAudio.mp3")
@@ -195,7 +199,6 @@ def videoCreator(topic, videoLink, themeLink):
     os.remove("croppedVideo.mp4")
     os.remove("cutVideo.mp4")
     os.remove("speech.mp3")
-    os.remove("video.mp4")
 
 
 #run the script
