@@ -57,16 +57,13 @@ def videoCreator(topic, videoLink, themeLink):
 
     #Settings for Testing 
     topic = topic
-    print(topic)
     youtubeVideoLink = videoLink
-    print(youtubeVideoLink)
     backgroundThemeLink = themeLink
-    print(themeLink)
     themeStart = 0
     videoStart = 40
 
     ###### Get Text about the Game 
-    API_SECRET_KEY_OPENAI = "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"
+    API_SECRET_KEY_OPENAI = "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"
 
     openai.api_key = API_SECRET_KEY_OPENAI
 

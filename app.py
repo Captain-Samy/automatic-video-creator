@@ -8,7 +8,12 @@ from flask import Flask, Response, request, render_template, send_file
 
 app = Flask(__name__)
 
+#First Page to start at / = nothing. It renders the index.html file.
+@app.route('/')
+def index():
+    return render_template('index.html')
 
+# Complicated shit which does the backend for the terminal 
 def run_script(command):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     for line in iter(process.stdout.readline, ''):
@@ -21,22 +26,20 @@ def run_script(command):
         raise subprocess.CalledProcessError(return_code, command)
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-
+# This leds us run the script and push the arguments to it 
 @app.route('/run_script')
 def run_script_route():
-    arg1 = request.args.get('arg1')
-    arg2 = request.args.get('arg2')
-    arg3 = request.args.get('arg3')
-    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3]
-    return Response(run_script(command), mimetype='text/html')
+    arg1 = request.args.get('arg1') # textprompt
+    arg2 = request.args.get('arg2') # videoLink
+    arg3 = request.args.get('arg3') # themelink 
+    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3] # create the command for the popen subprocess which also pushs the argument 
+    return Response(run_script(command), mimetype='text/html') # does the response to the frontend/client-side and also starts the script
 
+#Download function whichs sends the mp4 file to the client 
 @app.route('/download_file')
 def download_file():
     return send_file('output.mp4', as_attachment=True)
+
 
 if __name__ == '__main__':
     # start a separate thread to run the Flask app

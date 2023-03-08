@@ -127,8 +127,8 @@ function runScript() {
 
     const logElement = document.getElementById("log");
 
-    fetch(url)
-        .then(response => {
+    fetch(url) //Sends the URL with all the arguments to backend and then to the script 
+        .then(response => { //Terminal stuff I guess 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let buffer = '';
