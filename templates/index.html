@@ -133,7 +133,7 @@
         width: 26px;
         left: 4px;
         bottom: 4px;
-        background-color: rgb(129, 97, 218);
+        background-color: rgb(0, 0, 0);
         -webkit-transition: .4s;
         transition: .4s;
         }
@@ -175,17 +175,18 @@
         <label for="themeLink">Theme Link</label>
         <input type="text" name="themeLink" id="themeLink" value="https://www.youtube.com/watch?v=pUOibX2xV34"><br>
 
-        <label for="themeLink">OpenAI Api Key</label>
-        <input type="password" name="openAIApiKey" id="openAiApiKey" value={{openAiApiKey}}><br>        
-
-        <button class="button-9" onclick="runScript()" type="submit">Create Video</button>
-        <a href="{{ url_for('download_file', filename='output.mp4') }}"><img src="{{url_for('static', filename='download_Icon.png')}}" width="60" height="60"></a>
-
+        <label for="openAiApiKey">OpenAI Api Key</label>
+        <input type="password" name="openAIApiKey" id="openAiApiKey" value={{openAiApiKey}}><br>    
+        
         <label>Elevenlabs / Google TTS</label>
         <label class="switch">
             <input type="checkbox" id="ttsSwitch" onchange=test()>
             <span class="slider round"></span>
         </label>
+
+        <button class="button-9" onclick="runScript()" type="submit">Create Video</button>
+        <a href="{{ url_for('download_file', filename='output.mp4') }}"><img src="{{url_for('static', filename='download_Icon.png')}}" width="60" height="60"></a>
+
     </div>
     <div id="output"></div>
     <pre id="log"></pre>
