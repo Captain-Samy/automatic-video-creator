@@ -33,10 +33,11 @@ def run_script_route():
     arg2 = request.args.get('arg2') # videoLink
     arg3 = request.args.get('arg3') # themelink 
     arg4 = request.args.get('arg4') # possibleNewApiKey
+    arg5 = request.args.get('arg5') # Elevenlabs on or off
     keyComparer(arg4)
     arg4 = loadOpenAiApiKey()
 
-    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3, arg4] # create the command for the popen subprocess which also pushs the argument 
+    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3, arg4, arg5] # create the command for the popen subprocess which also pushs the argument 
     return Response(run_script(command), mimetype='text/html') # does the response to the frontend/client-side and also starts the script
 
 #Download function whichs sends the mp4 file to the client 

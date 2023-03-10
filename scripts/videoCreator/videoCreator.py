@@ -16,13 +16,17 @@ from moviepy.video.tools.subtitles import SubtitlesClip, TextClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from moviepy.config import change_settings
 from yt_dlp import YoutubeDL
+from googleapiclient.discovery import build
+from gtts import gTTS
+
+
 
 
 #For ImageMagick Idk what it does but idc
 change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"})
 
 
-def videoCreator(topic, videoLink, themeLink, openAiApiKey):
+def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts):
     #create srt files from text
     def second_to_timecode(x: float) -> str:
         hour, x = divmod(x, 3600)
@@ -68,13 +72,21 @@ def videoCreator(topic, videoLink, themeLink, openAiApiKey):
     text = response["choices"][0]["text"]
     print("--> Openai Text generated")
 
-    ###### Text to Speech with Elevenlabs
-    user = ElevenLabsUser("50053dae449db964a829c6dda45034ce") #fill in your api key as a string
-    voice = user.get_voices_by_name("Josh")[0]  #fill in the name of the voice you want to use. ex: "Rachel"
-    voice_bytes = voice.generate_audio_bytes(text) #fill in what you want the ai to say as a string
-    speech_audio = AudioSegment.from_file_using_temporary_files(io.BytesIO(voice_bytes))
-    speech_audio.export("speech.mp3", format="mp3")
-    print("--> Text to Speech Audo generated")
+    if tts == "false" :
+        ###### Text to Speech with Elevenlabs
+        user = ElevenLabsUser("50053dae449db964a829c6dda45034ce") #fill in your api key as a string
+        voice = user.get_voices_by_name("Josh")[0]  #fill in the name of the voice you want to use. ex: "Rachel"
+        voice_bytes = voice.generate_audio_bytes(text) #fill in what you want the ai to say as a string
+        speech_audio = AudioSegment.from_file_using_temporary_files(io.BytesIO(voice_bytes))
+        speech_audio.export("speech.mp3", format="mp3")
+        print("--> Text to Speech Audo generated with elevenlabs")
+
+    else:
+        speech_audio = gTTS(text = text, lang = "en", slow = False, tld="co.uk")
+        speech_audio.save("speech.mp3")
+        speech_audio = AudioSegment.from_file("speech.mp3")
+        print("--> Text to Speech Audo generated with gtts")
+
 
     audio = YouTube(themeLink)
     audio_stream = audio.streams.filter(only_audio=True).first()
@@ -265,4 +277,4 @@ def videoCreator(topic, videoLink, themeLink, openAiApiKey):
 
 
 #run the script
-videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3], openAiApiKey = sys.argv[4])
+videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3], openAiApiKey = sys.argv[4], tts = sys.argv[5])

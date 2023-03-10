@@ -9,3 +9,5 @@ pytube==12.1.2
 soundfile==0.12.1
 sounddevice==0.4.6
 youtube_dl==2021.12.17
+google-api-python-client==2.80.0
+gtts==2.3.1
