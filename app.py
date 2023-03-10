@@ -40,25 +40,26 @@ def run_script_route():
     command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3, arg4, arg5] # create the command for the popen subprocess which also pushs the argument 
     return Response(run_script(command), mimetype='text/html') # does the response to the frontend/client-side and also starts the script
 
+
 #Download function whichs sends the mp4 file to the client 
 @app.route('/download_file')
 def download_file():
     return send_file('output.mp4', as_attachment=True)
 
+
 #loads Api Key from txt file
 def loadOpenAiApiKey ():
-        with open('openAiKey.txt', 'r') as file:
+        with open('properties.txt', 'r') as file:
              key = file.read()
         return key
 
+
 def keyComparer (possibleNewKey): 
     if loadOpenAiApiKey() != possibleNewKey:
-        data = open('openAiKey.txt', 'w') 
+        data = open('properties.txt', 'w') 
         data.truncate(0)
         data.write(possibleNewKey)
         print("API KEY changed")
-               
-
 
 
 if __name__ == '__main__':
