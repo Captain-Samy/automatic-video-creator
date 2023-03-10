@@ -112,6 +112,9 @@
         <label for="themeLink">Theme Link</label>
         <input type="text" name="themeLink" id="themeLink" value="https://www.youtube.com/watch?v=pUOibX2xV34"><br>
 
+        <label for="themeLink">OpenAI Api Key</label>
+        <input type="password" name="openAIApiKey" id="openAiApiKey" value={{openAiApiKey}}><br>        
+
         <button class="button-9" onclick="runScript()" type="submit">Create Video</button>
         <a href="{{ url_for('download_file', filename='output.mp4') }}"><img src="{{url_for('static', filename='download_Icon.png')}}" width="60" height="60"></a>
     </div>
@@ -119,33 +122,36 @@
     <pre id="log"></pre>
 </body>
 <script>
-function runScript() {
-    const topic = document.getElementById("topic").value; 
-    const videoLink = document.getElementById("videoLink").value;
-    const themeLink = document.getElementById("themeLink").value;
-    const url = `/run_script?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}`;
+    //Runs the script and does stuff for the terminal
+    function runScript() {
+        const topic = document.getElementById("topic").value; 
+        const videoLink = document.getElementById("videoLink").value;
+        const themeLink = document.getElementById("themeLink").value;
+        const possibleNewKey = document.getElementById("openAiApiKey").value;
+        const url = `/run_script?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}&arg4=${possibleNewKey}`;
 
-    const logElement = document.getElementById("log");
 
-    fetch(url) //Sends the URL with all the arguments to backend and then to the script 
-        .then(response => { //Terminal stuff I guess 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-            reader.read().then(function processResult(result) {
-                if (result.done) {
-                    return;
-                }
-                buffer += decoder.decode(result.value, {stream: true});
-                const lines = buffer.split('\n');
-                buffer = lines.pop();
-                for (const line of lines) {
-                    logElement.innerText += `${line}\n`;
-                }
-                return reader.read().then(processResult);
-            });
-        })
-        .catch(error => console.error(error));
+        const logElement = document.getElementById("log");
+
+        fetch(url) //Sends the URL with all the arguments to backend and then to the script 
+            .then(response => { //Terminal stuff I guess 
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                reader.read().then(function processResult(result) {
+                    if (result.done) {
+                        return;
+                    }
+                    buffer += decoder.decode(result.value, {stream: true});
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+                    for (const line of lines) {
+                        logElement.innerText += `${line}\n`;
+                    }
+                    return reader.read().then(processResult);
+                });
+            })
+            .catch(error => console.error(error));
 }
 </script>
 </html>

@@ -22,7 +22,7 @@ from yt_dlp import YoutubeDL
 change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"})
 
 
-def videoCreator(topic, videoLink, themeLink):
+def videoCreator(topic, videoLink, themeLink, openAiApiKey):
     #create srt files from text
     def second_to_timecode(x: float) -> str:
         hour, x = divmod(x, 3600)
@@ -56,27 +56,19 @@ def videoCreator(topic, videoLink, themeLink):
         return '\n'.join(lines)
 
     #Settings for Testing 
-    topic = topic
-    youtubeVideoLink = videoLink
-    backgroundThemeLink = themeLink
     themeStart = 0
     videoStart = 23
 
-    ###### Get Text about the Game 
-    API_SECRET_KEY_OPENAI = "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"
-
-    openai.api_key = API_SECRET_KEY_OPENAI
-
+    ###### Text Creation with OpenAI ChatGPT
+    openai.api_key = openAiApiKey
     model = "text-davinci-003"
     temperature = 0.9
     max_tokens = 500
-
-
     response = openai.Completion.create(prompt = topic, model = model, temperature=temperature, max_tokens = max_tokens)
-
     text = response["choices"][0]["text"]
     print("--> Openai Text generated")
 
+    ###### Text to Speech with Elevenlabs
     user = ElevenLabsUser("50053dae449db964a829c6dda45034ce") #fill in your api key as a string
     voice = user.get_voices_by_name("Josh")[0]  #fill in the name of the voice you want to use. ex: "Rachel"
     voice_bytes = voice.generate_audio_bytes(text) #fill in what you want the ai to say as a string
@@ -84,7 +76,7 @@ def videoCreator(topic, videoLink, themeLink):
     speech_audio.export("speech.mp3", format="mp3")
     print("--> Text to Speech Audo generated")
 
-    audio = YouTube(backgroundThemeLink)
+    audio = YouTube(themeLink)
     audio_stream = audio.streams.filter(only_audio=True).first()
     audio_stream.download(filename="backgroundAudio.mp3",)
     background_audio = AudioSegment.from_file("backgroundAudio.mp3")
@@ -112,9 +104,6 @@ def videoCreator(topic, videoLink, themeLink):
     ###### Get Youtube Video
 
     # Create a YouTube object and get the highest resolution stream
-    #yt = YouTube(youtubeVideoLink)
-    #stream = yt.streams.get_highest_resolution()
-    #stream.download(filename="video.mp4")
     os.remove("video.mp4")
     ydl_opts = {
     'format': 'bestvideo[ext=mp4][ext=mp4]',
@@ -250,7 +239,6 @@ def videoCreator(topic, videoLink, themeLink):
         f.write(srt)
     
 
-
     # Load the video and subtitle files
     video = VideoFileClip("croppedVideo.mp4")
 
@@ -277,4 +265,4 @@ def videoCreator(topic, videoLink, themeLink):
 
 
 #run the script
-videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3])
+videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3], openAiApiKey = sys.argv[4])
