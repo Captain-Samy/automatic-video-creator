@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 import sys
@@ -34,7 +35,7 @@ def run_script_route():
     arg3 = request.args.get('arg3') # themelink 
     arg4 = request.args.get('arg4') # possibleNewApiKey
     arg5 = request.args.get('arg5') # Elevenlabs on or off
-    keyComparer(arg4)
+    subprocess.run(['python', 'keyComparer.py', arg4])
     arg4 = loadOpenAiApiKey()
 
     command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3, arg4, arg5] # create the command for the popen subprocess which also pushs the argument 
@@ -49,17 +50,11 @@ def download_file():
 
 #loads Api Key from txt file
 def loadOpenAiApiKey ():
-        with open('properties.txt', 'r') as file:
-             key = file.read()
+        with open('properties.json', 'r') as file:
+             key = json.load(file)
+        print(key)
+        key = key["keys"]["openAi"]
         return key
-
-
-def keyComparer (possibleNewKey): 
-    if loadOpenAiApiKey() != possibleNewKey:
-        data = open('properties.txt', 'w') 
-        data.truncate(0)
-        data.write(possibleNewKey)
-        print("API KEY changed")
 
 
 if __name__ == '__main__':

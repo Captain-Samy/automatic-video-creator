@@ -185,8 +185,7 @@
         </label>
 
         <button class="button-9" onclick="runScript()" type="submit">Create Video</button>
-        <a href="{{ url_for('download_file', filename='output.mp4') }}"><img src="{{url_for('static', filename='download_Icon.png')}}" width="60" height="60"></a>
-
+        <a href="{{ url_for('download_file', filename='output.mp4')}}"><img src="{{url_for('static', filename='download_Icon.png')}}" width="60" height="60"></a>
     </div>
     <div id="output"></div>
     <pre id="log"></pre>
