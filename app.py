@@ -56,7 +56,6 @@ def download_file():
 def loadProperties ():
         with open('properties.json', 'r') as file:
              properties = json.load(file)
-        print(properties)
         return properties
 
 

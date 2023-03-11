@@ -243,7 +243,6 @@
             dropdown.appendChild(option);
         }
         dropdown.value = properties["voices"]["elevenlabs"]["selectedVoice"]
-        console.log(document.value)
     }
     window.onload(loadVoices())
 
@@ -262,7 +261,6 @@
         var [minutes, seconds] = themeStartTime.split(':').map(Number);
         themeStartTime = minutes * 60 + seconds;
         const selectedVoice = document.getElementById("voicesDropdown").value
-        console.log("selectedVoice")
 
         const url = `/run_script?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}&arg4=${possibleNewKey}&arg5=${tts}&arg6=${videoStartTime}&arg7=${themeStartTime}&arg8=${selectedVoice}`;
 
