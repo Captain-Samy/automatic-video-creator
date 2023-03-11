@@ -12,7 +12,7 @@ app = Flask(__name__)
 #First Page to start at / = nothing. It renders the index.html file.
 @app.route('/')
 def index():
-    return render_template('index.html', openAiApiKey = loadOpenAiApiKey())
+    return render_template('index.html', properties = loadProperties())
 
 # Complicated shit which does the backend for the terminal 
 def run_script(command):
@@ -37,10 +37,12 @@ def run_script_route():
     arg5 = request.args.get('arg5') # Elevenlabs on or off
     arg6 = request.args.get('arg6') # videoStartTime
     arg7 = request.args.get('arg7') # themeStartTime
+    arg8 = request.args.get('arg8') # selectedVoice
     subprocess.run(['python', 'keyComparer.py', arg4])
-    arg4 = loadOpenAiApiKey()
+    arg4 = loadProperties()
+    arg4 = arg4["keys"]["openAi"]
 
-    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3, arg4, arg5, arg6, arg7] # create the command for the popen subprocess which also pushs the argument 
+    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8] # create the command for the popen subprocess which also pushs the argument 
     return Response(run_script(command), mimetype='text/html') # does the response to the frontend/client-side and also starts the script
 
 
@@ -51,12 +53,12 @@ def download_file():
 
 
 #loads Api Key from txt file
-def loadOpenAiApiKey ():
+def loadProperties ():
         with open('properties.json', 'r') as file:
-             key = json.load(file)
-        print(key)
-        key = key["keys"]["openAi"]
-        return key
+             properties = json.load(file)
+        print(properties)
+        return properties
+
 
 
 if __name__ == '__main__':

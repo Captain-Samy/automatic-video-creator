@@ -24,7 +24,7 @@ from gtts import gTTS
 change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"})
 
 
-def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts, videoStartTime, themeStartTime):
+def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts, videoStartTime, themeStartTime, selectedVoice):
     #create srt files from text
     def second_to_timecode(x: float) -> str:
         hour, x = divmod(x, 3600)
@@ -73,7 +73,7 @@ def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts, videoStartTime,
     if tts == "false" :
         ###### Text to Speech with Elevenlabs
         user = ElevenLabsUser("50053dae449db964a829c6dda45034ce") #fill in your api key as a string
-        voice = user.get_voices_by_name("Josh")[0]  #fill in the name of the voice you want to use. ex: "Rachel"
+        voice = user.get_voices_by_name(selectedVoice)[0]  #fill in the name of the voice you want to use. ex: "Rachel"
         voice_bytes = voice.generate_audio_bytes(text) #fill in what you want the ai to say as a string
         speech_audio = AudioSegment.from_file_using_temporary_files(io.BytesIO(voice_bytes))
         speech_audio.export("speech.mp3", format="mp3")
@@ -275,4 +275,4 @@ def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts, videoStartTime,
 
 
 #run the script
-videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3], openAiApiKey = sys.argv[4], tts = sys.argv[5], videoStartTime = sys.argv[6], themeStartTime = sys.argv[7])
+videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3], openAiApiKey = sys.argv[4], tts = sys.argv[5], videoStartTime = sys.argv[6], themeStartTime = sys.argv[7], selectedVoice = sys.argv[8])

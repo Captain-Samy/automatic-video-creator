@@ -4,7 +4,6 @@ import sys
 def loadOpenAiApiKey ():
         with open('properties.json', 'r') as file:
              key = json.load(file)
-        print(key)
         key = key["keys"]["openAi"]
         return key
 
@@ -13,12 +12,12 @@ def keyComparer (possibleNewKey):
     if loadOpenAiApiKey() != possibleNewKey:
         with open('properties.json', 'r+') as file:
             data = json.load(file)
-        print(data)
         data["keys"]["openAi"] = possibleNewKey
         with open('properties.json', 'w') as f:
             json.dump(data, f)
-    print("API KEY changed")
+        print("API KEY changed")
+    else:
+        print("API KEY the same")
 
 possibleNewKey = sys.argv[1]
-print(possibleNewKey)
 keyComparer(possibleNewKey)
