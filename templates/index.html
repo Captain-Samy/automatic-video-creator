@@ -27,7 +27,7 @@
             width: 60%;
 
         }
-        input{
+        .inputBig{
             width: 100%; 
                 border-radius: 5px;
                 background: rgb(249, 250, 250);
@@ -39,19 +39,36 @@
                 color: #405cf5;
                 box-shadow: none;
                 }
-        input:focus{
+        .inputBig:focus{
                     background-color: #fff;
                     border-color: #a37be2;
                     box-shadow: 1px 1px 0 #405cf5;
                 }
-                
+        .inputSmall{
+            width: 80%; 
+                margin-top: 0.5vh;
+                border-radius: 5px;
+                background: rgb(249, 250, 250);
+                border: 1px solid #405cf5;
+                font-size: 16px;
+                height: 40px;
+                line-height: 24px;
+                padding: 7px 8px;
+                color: #405cf5;
+                box-shadow: none;
+                }
+        .inputSmall:focus{
+                    background-color: #fff;
+                    border-color: #a37be2;
+                    box-shadow: 1px 1px 0 #405cf5;
+                }        
         #log {
             background-color: black;
             color: white;
             font-family: monospace;
             padding: 10px;
             width: 80%;
-            height: 300px;
+            height: 100%;
             overflow-y: scroll;}
 
             /* CSS */
@@ -167,21 +184,32 @@
     <h1 class="headline">Automatic Video Creater</h1>
     <div id="inputs">
         <label for="topic">Prompt</label>
-        <input type="text" name="topic" id="topic" value="imitating SsethTzeentachs style write a 100 word video essay about Battlefield 5 and how much you hate the developers for making this game as well as every human who still plays it using funny comparisons as well as ironic and funny remarks"><br>
+        <input class = "inputBig" type="text" name="topic" id="topic" value="imitating SsethTzeentachs style write a 100 word video essay about Battlefield 5 and how much you hate the developers for making this game as well as every human who still plays it using funny comparisons as well as ironic and funny remarks"><br>
 
         <label for="videoLink">Video Link</label>
-        <input type="text" name="videoLink" id="videoLink" value="https://www.youtube.com/watch?v=cmYVGZ1w1y4"><br>
+        <input class = "inputBig" type="text" name="videoLink" id="videoLink" value="https://www.youtube.com/watch?v=cmYVGZ1w1y4"><br>
 
         <label for="themeLink">Theme Link</label>
-        <input type="text" name="themeLink" id="themeLink" value="https://www.youtube.com/watch?v=pUOibX2xV34"><br>
+        <input class = "inputBig" type="text" name="themeLink" id="themeLink" value="https://www.youtube.com/watch?v=pUOibX2xV34"><br>
 
-        <label for="openAiApiKey">OpenAI Api Key</label>
-        <input type="password" name="openAIApiKey" id="openAiApiKey" value={{openAiApiKey}}><br>    
-        
-        <label>Elevenlabs / Google TTS</label>
-        <label class="switch">
-            <input type="checkbox" id="ttsSwitch" onchange=test()>
-            <span class="slider round"></span>
+        <div style="display: flex; flex-direction: row;">
+            <div>
+                <label for="openAiApiKey">OpenAI Api Key</label>
+                <input class="inputSmall" type="password" name="openAIApiKey" id="openAiApiKey" value={{openAiApiKey}}><br>
+            </div>
+            <div>
+                <label for="time">Video Start at (mm:ss):</label>
+                <input class="inputSmall" type="text" id="time" name="time" pattern="\d{1,2}:\d{2}" placeholder="00:00" required>
+            </div>
+            <div>
+                <label for="time">Theme Start at (mm:ss):</label>
+                <input class="inputSmall" type="text" id="time" name="time" pattern="\d{1,2}:\d{2}" placeholder="00:00" required>
+            </div>       
+        </div style="">
+            <label style="margin-top: 2vh;">Elevenlabs / Google TTS</label>
+            <label class="switch">
+                <input type="checkbox" id="ttsSwitch" onchange=test()>
+                <span class="slider round"></span>
         </label>
 
         <button class="button-9" onclick="runScript()" type="submit">Create Video</button>
