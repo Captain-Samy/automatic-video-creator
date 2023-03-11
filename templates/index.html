@@ -206,7 +206,8 @@
                 <label for="time">Theme Start at (mm:ss):</label>
                 <input class="inputSmall" type="text" id="themeStartTime" value="00:00" name="time" pattern="\d{1,2}:\d{2}" placeholder="00:00" required>
             </div>       
-        </div style="display:flex; flex-direction:row">
+        </div >
+        <div style="display:flex; flex-direction:row; justify-content: space-between; width: 60%; margin-top: 2vh;">
             <div>
                 <label style="margin-top: 2vh;">Elevenlabs / Google TTS</label>
                 <label class="switch">
@@ -218,6 +219,7 @@
                 <select id="voicesDropdown">
                 </select>
             </div>
+        </div>
         </label>
 
         <button class="button-9" onclick="runScript()" type="submit">Create Video</button>
