@@ -199,11 +199,11 @@
             </div>
             <div>
                 <label for="time">Video Start at (mm:ss):</label>
-                <input class="inputSmall" type="text" id="time" name="time" pattern="\d{1,2}:\d{2}" placeholder="00:00" required>
+                <input class="inputSmall" type="text" id="videoStartTime" name="time" pattern="\d{1,2}:\d{2}" placeholder="00:00" required>
             </div>
             <div>
                 <label for="time">Theme Start at (mm:ss):</label>
-                <input class="inputSmall" type="text" id="time" name="time" pattern="\d{1,2}:\d{2}" placeholder="00:00" required>
+                <input class="inputSmall" type="text" id="themeStartTime" name="time" pattern="\d{1,2}:\d{2}" placeholder="00:00" required>
             </div>       
         </div style="">
             <label style="margin-top: 2vh;">Elevenlabs / Google TTS</label>
@@ -227,7 +227,14 @@
         const possibleNewKey = document.getElementById("openAiApiKey").value;
         var switchElement = document.getElementById("ttsSwitch")
         var tts = switchElement.checked;
-        const url = `/run_script?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}&arg4=${possibleNewKey}&arg5=${tts}`;
+        var videoStartTime = document.getElementById("videoStartTime").value
+        var [minutes, seconds] = videoStartTime.split(':').map(Number);
+        videoStartTime = minutes * 60 + seconds;
+        var themeStartTime = document.getElementById("themeStartTime").value
+        var [minutes, seconds] = themeStartTime.split(':').map(Number);
+        themeStartTime = minutes * 60 + seconds;
+
+        const url = `/run_script?arg1=${topic}&arg2=${videoLink}&arg3=${themeLink}&arg4=${possibleNewKey}&arg5=${tts}&arg6=${videoStartTime}&arg7=${themeStartTime}`;
 
 
         const logElement = document.getElementById("log");

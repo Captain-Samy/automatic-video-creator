@@ -35,10 +35,12 @@ def run_script_route():
     arg3 = request.args.get('arg3') # themelink 
     arg4 = request.args.get('arg4') # possibleNewApiKey
     arg5 = request.args.get('arg5') # Elevenlabs on or off
+    arg6 = request.args.get('arg6') # videoStartTime
+    arg7 = request.args.get('arg7') # themeStartTime
     subprocess.run(['python', 'keyComparer.py', arg4])
     arg4 = loadOpenAiApiKey()
 
-    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3, arg4, arg5] # create the command for the popen subprocess which also pushs the argument 
+    command = ['python', 'scripts/videoCreator/videoCreator.py', arg1, arg2, arg3, arg4, arg5, arg6, arg7] # create the command for the popen subprocess which also pushs the argument 
     return Response(run_script(command), mimetype='text/html') # does the response to the frontend/client-side and also starts the script
 
 

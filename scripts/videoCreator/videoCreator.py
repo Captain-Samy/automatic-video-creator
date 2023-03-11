@@ -20,13 +20,11 @@ from googleapiclient.discovery import build
 from gtts import gTTS
 
 
-
-
 #For ImageMagick Idk what it does but idc
 change_settings({"IMAGEMAGICK_BINARY": r"C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"})
 
 
-def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts):
+def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts, videoStartTime, themeStartTime):
     #create srt files from text
     def second_to_timecode(x: float) -> str:
         hour, x = divmod(x, 3600)
@@ -60,8 +58,8 @@ def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts):
         return '\n'.join(lines)
 
     #Settings for Testing 
-    themeStart = 0
-    videoStart = 23
+    themeStart = int(themeStartTime)
+    videoStart = int(videoStartTime)
 
     ###### Text Creation with OpenAI ChatGPT
     openai.api_key = openAiApiKey
@@ -277,4 +275,4 @@ def videoCreator(topic, videoLink, themeLink, openAiApiKey, tts):
 
 
 #run the script
-videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3], openAiApiKey = sys.argv[4], tts = sys.argv[5])
+videoCreator(topic = sys.argv[1], videoLink=sys.argv[2], themeLink=sys.argv[3], openAiApiKey = sys.argv[4], tts = sys.argv[5], videoStartTime = sys.argv[6], themeStartTime = sys.argv[7])
